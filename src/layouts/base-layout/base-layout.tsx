@@ -1,25 +1,54 @@
 import {
+  Anchor,
   AppShell,
+  Breadcrumbs,
   Burger,
   createStyles,
   Header,
   MediaQuery,
   Navbar,
+  Stack,
   Title,
   useMantineTheme,
 } from '@mantine/core'
 import Head from 'next/head'
-import { ReactNode, useState } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { ReactNode, useMemo, useState } from 'react'
 
 export interface BaseLayoutProps {
+  /**
+   * The title of the page
+   */
   title?: string
+  /**
+   * The title of the content
+   */
+  contentTitle?: string
+  showBreadcrumbs?: boolean
   children: ReactNode
 }
-export function BaseLayout({ title, children }: BaseLayoutProps) {
+export function BaseLayout({
+  title,
+  contentTitle,
+  showBreadcrumbs,
+  children,
+}: BaseLayoutProps) {
+  const router = useRouter()
   const theme = useMantineTheme()
   const [opened, setOpened] = useState(false)
 
   const { classes } = useStyles()
+
+  const breadCrumbItems = useMemo<JSX.Element[]>(() => {
+    const items = router.pathname.split('/').filter(Boolean)
+    return items.map(item => (
+      <Anchor key={item} component={Link} href={`/${item}`}>
+        {item}
+      </Anchor>
+    ))
+  }, [router.pathname])
+
   return (
     <>
       <Head>
@@ -65,7 +94,13 @@ export function BaseLayout({ title, children }: BaseLayoutProps) {
           },
         }}
       >
-        {children}
+        <Stack>
+          {showBreadcrumbs ? (
+            <Breadcrumbs>{breadCrumbItems}</Breadcrumbs>
+          ) : null}
+          {contentTitle ? <Title order={4}>{contentTitle}</Title> : null}
+          {children}
+        </Stack>
       </AppShell>
     </>
   )
