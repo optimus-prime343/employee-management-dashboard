@@ -1,4 +1,10 @@
+import { BaseLayout } from '@/layouts/base-layout'
+
 function HomePage() {
-  return <div>HomePage</div>
+  return (
+    <BaseLayout>
+      <p>Home page</p>
+    </BaseLayout>
+  )
 }
 export default HomePage
