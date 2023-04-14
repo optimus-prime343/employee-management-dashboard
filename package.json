@@ -13,6 +13,7 @@
     "@emotion/react": "^11.10.6",
     "@emotion/server": "^11.10.0",
     "@mantine/core": "^6.0.7",
+    "@mantine/form": "^6.0.7",
     "@mantine/hooks": "^6.0.7",
     "@mantine/next": "^6.0.7",
     "@prisma/client": "^4.12.0",
@@ -30,7 +31,8 @@
     "next-connect": "^0.13.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/http-status-codes": "^1.2.0",
