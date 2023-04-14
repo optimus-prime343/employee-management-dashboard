@@ -18,7 +18,8 @@ const onNoMatch = (_request: NextApiRequest, response: NextApiResponse) => {
     error: getReasonPhrase(StatusCodes.NOT_FOUND),
   })
 }
-export const handler = nc<NextApiRequest, NextApiResponse>({
-  onError,
-  onNoMatch,
-})
+export const createHandlerFactory = () =>
+  nc<NextApiRequest, NextApiResponse>({
+    onError,
+    onNoMatch,
+  })
