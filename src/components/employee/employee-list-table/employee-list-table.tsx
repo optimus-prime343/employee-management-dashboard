@@ -4,6 +4,7 @@ import { IconEye, IconPencil, IconTrash } from '@tabler/icons-react'
 import { useMemo } from 'react'
 
 import { EmployeeWithTeam } from '@/hooks/employee'
+import { getEmployeeFullName } from '@/utils/employee'
 
 export interface EmployeeListTableProps {
   employees: EmployeeWithTeam[]
@@ -21,11 +22,7 @@ export function EmployeeListTable({
     return employees.map(employee => (
       <tr key={employee.id}>
         <td>{employee.id}</td>
-        <td>
-          {`${employee.firstName} ${employee.middleName ?? ''} ${
-            employee.lastName
-          }`}
-        </td>
+        <td>{getEmployeeFullName(employee)}</td>
         <td>{employee.team ? employee.team.name : 'No team'}</td>
         <td>{employee.phoneNumber}</td>
         <td>{employee.email}</td>
