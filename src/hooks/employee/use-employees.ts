@@ -14,7 +14,7 @@ export const useEmployees = () =>
       try {
         const employeesResponse = await api.get<
           ApiResponseSuccess<EmployeeWithTeam[]>
-        >(API_ENDPOINTS.employee.getEmployees)
+        >(API_ENDPOINTS.employee.base)
         return employeesResponse.data.data
       } catch (error) {
         console.error(error)

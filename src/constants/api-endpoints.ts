@@ -1,8 +1,8 @@
 export const API_ENDPOINTS = {
   baseUrl: '/api',
   employee: {
+    base: '/employee',
     getEmployeeCount: '/employee/count',
-    getEmployees: '/employee',
   },
   team: {
     getTeamCount: '/team/count',
