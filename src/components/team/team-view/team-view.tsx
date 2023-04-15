@@ -1,13 +1,15 @@
 import { Box, Button, createStyles, TextInput } from '@mantine/core'
 import { IconFilter, IconPlus, IconSearch } from '@tabler/icons-react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 
 import { ManHourRangeFilter } from '@/components/team/man-hour-range-filter'
 import { TeamListTable } from '@/components/team/team-list-table'
-import { useTeams } from '@/hooks/team'
+import { TeamWithMembers, useTeams } from '@/hooks/team'
 
 export function TeamView() {
+  const router = useRouter()
   const [search, setSearch] = useState('')
   const [teamManHourRange, setTeamManHourRange] = useState<
     [number, number] | undefined
@@ -18,6 +20,17 @@ export function TeamView() {
   const handleClearFilter = useCallback(
     () => setTeamManHourRange(undefined),
     []
+  )
+  const handleEditTeam = useCallback(
+    (team: TeamWithMembers) => {
+      void router.push({
+        pathname: '/edit-team',
+        query: {
+          teamId: team.id,
+        },
+      })
+    },
+    [router]
   )
   const { classes } = useStyles()
   return (
@@ -43,7 +56,7 @@ export function TeamView() {
           Add Team
         </Button>
       </Box>
-      <TeamListTable teams={teams} />
+      <TeamListTable onEditTeam={handleEditTeam} teams={teams} />
     </Box>
   )
 }

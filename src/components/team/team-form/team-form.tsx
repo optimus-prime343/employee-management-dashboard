@@ -14,6 +14,7 @@ import { useForm, zodResolver } from '@mantine/form'
 import { useCallback, useMemo } from 'react'
 
 import { useEmployees } from '@/hooks/employee'
+import { TeamWithMembers } from '@/hooks/team'
 import { TeamFormData, TeamSchema } from '@/schemas/team'
 import { getEmployeeFullName } from '@/utils/employee'
 
@@ -26,7 +27,7 @@ export interface AddTeamFormProps {
 }
 export interface EditTeamFormProps {
   mode: 'edit'
-  teamId: string
+  team: TeamWithMembers
   onEditTeam: (teamFormData: TeamFormData) => void
   isEditButtonLoading?: boolean
 }
@@ -45,18 +46,22 @@ export function TeamForm(props: TeamFormProps) {
         value: employee.id.toString(),
         description: employee.position,
         image: employee.profileImage,
-        isAlreadyOnATeam: employee.teamId !== null,
+        // isAlreadyOnATeam: employee.teamId !== null,
         disabled: employee.teamId !== null,
       })),
     [employees]
   )
+  const team = props.mode === 'edit' ? props.team : undefined
+  const teamMembers =
+    team !== undefined ? team.members.map(member => member.id.toString()) : []
+
   const form = useForm<TeamFormData>({
     validate: zodResolver(TeamSchema),
     initialValues: {
-      name: '',
-      password: '',
-      members: [],
-      totalManHours: 0,
+      name: team?.name ?? '',
+      password: team?.password ?? '',
+      members: teamMembers,
+      totalManHours: team?.totalManHours ?? 0,
     },
   })
 

@@ -7,5 +7,6 @@ export const QUERY_KEYS = {
   team: {
     getTeamCount: ['teamCount'],
     getTeams: ['teams'],
+    getTeamDetail: (id: string) => ['team', id],
   },
 } as const

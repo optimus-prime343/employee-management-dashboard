@@ -1,3 +1,5 @@
 export * from './use-add-team'
+export * from './use-edit-team'
 export * from './use-team-count'
+export * from './use-team-detail'
 export * from './use-teams'
