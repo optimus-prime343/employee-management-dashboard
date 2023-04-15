@@ -6,7 +6,11 @@ import { createHandlerFactory } from '@/utils/handler'
 const handler = createHandlerFactory()
 
 handler.get(async (request, response) => {
-  const teams = await db.team.findMany()
+  const teams = await db.team.findMany({
+    include: {
+      members: true,
+    },
+  })
   response.status(StatusCodes.OK).json({
     data: teams,
   })

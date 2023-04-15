@@ -4,12 +4,16 @@ import Link from 'next/link'
 import { useCallback, useState } from 'react'
 
 import { ManHourRangeFilter } from '@/components/team/man-hour-range-filter'
+import { TeamListTable } from '@/components/team/team-list-table'
+import { useTeams } from '@/hooks/team'
 
 export function TeamView() {
   const [search, setSearch] = useState('')
   const [teamManHourRange, setTeamManHourRange] = useState<
     [number, number] | undefined
   >(undefined)
+
+  const { data: teams } = useTeams()
 
   const handleClearFilter = useCallback(
     () => setTeamManHourRange(undefined),
@@ -18,7 +22,7 @@ export function TeamView() {
   const { classes } = useStyles()
   return (
     <Box py='md'>
-      <Box className={classes.searchContainer}>
+      <Box className={classes.searchContainer} mb='md'>
         <TextInput
           icon={<IconSearch />}
           onChange={event => setSearch(event.currentTarget.value)}
@@ -39,6 +43,7 @@ export function TeamView() {
           Add Team
         </Button>
       </Box>
+      <TeamListTable teams={teams} />
     </Box>
   )
 }
