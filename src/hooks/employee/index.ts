@@ -1,3 +1,6 @@
+export * from './use-add-employee'
 export * from './use-delete-employee'
+export * from './use-edit-employee'
 export * from './use-employee-count'
+export * from './use-employee-detail'
 export * from './use-employees'

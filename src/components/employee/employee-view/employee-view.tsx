@@ -4,6 +4,7 @@ import { showNotification } from '@mantine/notifications'
 import { Employee } from '@prisma/client'
 import { IconPlus, IconSearch } from '@tabler/icons-react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 
 import { EmployeeListTable } from '@/components/employee/employee-list-table'
@@ -16,6 +17,7 @@ export function EmployeeView() {
   const [selectedEmployee, setSelectedEmployee] = useState<
     Employee | undefined
   >(undefined)
+  const router = useRouter()
 
   const { data: employees, refetch: refetchEmployees } = useEmployees()
   const deleteEmployee = useDeleteEmployee()
@@ -58,6 +60,14 @@ export function EmployeeView() {
     },
     [deleteEmployee, refetchEmployees]
   )
+  const handleEditEmployee = useCallback(
+    (employee: Employee) =>
+      void router.push({
+        pathname: '/edit-employee',
+        query: { id: employee.id },
+      }),
+    [router]
+  )
   return (
     <>
       {selectedEmployee !== undefined ? (
@@ -81,6 +91,7 @@ export function EmployeeView() {
         <EmployeeListTable
           employees={employees}
           onDeleteEmployee={openConfirmDeleteEmployeeModal}
+          onEditEmployee={handleEditEmployee}
           onViewEmployee={setSelectedEmployee}
         />
       </Paper>

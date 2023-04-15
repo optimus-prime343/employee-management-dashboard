@@ -13,34 +13,30 @@ import { uploadImage } from '@/utils/upload-image'
 
 dayjs.extend(CustomParseFormat)
 
-// extend the type of NextApiRequest to include the files property
-declare module 'next' {
-  interface NextApiRequest {
-    files?: Express.Multer.File[]
-  }
-}
-
 const handler = createHandlerFactory()
 
 handler
   .use(multer().any())
   .get(async (request, response) => {
-    const employees = await db.employee.findMany({
-      include: {
-        team: true,
-      },
-    })
-    response.status(StatusCodes.OK).json({
-      data: employees,
-    })
-  })
-  .post(async (request, response) => {
     try {
-      const profileImageFile = request.files?.[0]
-      const profileImageURL = await uploadImage(
-        profileImageFile,
-        '/images/employees'
-      )
+      const { id } = request.query
+      const employee = await db.employee.findUniqueOrThrow({
+        where: {
+          id: Number(id),
+        },
+      })
+      response.status(StatusCodes.OK).json({
+        data: employee,
+      })
+    } catch (error) {
+      response.status(StatusCodes.NOT_FOUND).json({
+        data: error instanceof Error ? error.message : 'Employee not found',
+      })
+    }
+  })
+  .patch(async (request, response) => {
+    try {
+      const { id } = request.query as { id: string }
       const {
         firstName,
         middleName,
@@ -57,10 +53,16 @@ handler
         isBillable,
         billableHours,
       } = request.body as Record<
-        keyof Prisma.EmployeeUncheckedCreateInput,
+        keyof Prisma.EmployeeUncheckedUpdateInput,
         string
       >
-      const newEmployee = await db.employee.create({
+      const profileImageFile = request.files?.[0]
+      const profileImageURL = await uploadImage(
+        profileImageFile,
+        '/images/employees'
+      )
+      const updatedEmployee = await db.employee.update({
+        where: { id: Number(id) },
         data: {
           firstName,
           middleName: middleName || null,
@@ -76,12 +78,12 @@ handler
           teamId: JSON.parse(teamId) ?? null,
           isBillable: JSON.parse(isBillable) ?? false,
           billableHours: JSON.parse(billableHours) ?? 40,
-          profileImage: profileImageURL,
+          profileImage: profileImageURL ?? undefined,
         },
       })
-      response.status(StatusCodes.CREATED).json({
-        data: `Successfully added a new employee ${getEmployeeFullName(
-          newEmployee
+      response.status(StatusCodes.OK).json({
+        data: `Successfully updated employee ${getEmployeeFullName(
+          updatedEmployee
         )}`,
       })
     } catch (error) {
@@ -93,21 +95,11 @@ handler
       })
     }
   })
-  .delete(async (request, response) => {
-    const { id } = request.query as { id: string }
-    await db.employee.delete({
-      where: {
-        id: Number(id),
-      },
-    })
-    response.status(StatusCodes.OK).json({
-      data: 'Successfully deleted the employee',
-    })
-  })
 export const config = {
   api: {
     bodyParser: false,
     responseLimit: false,
   },
 }
+
 export default handler
