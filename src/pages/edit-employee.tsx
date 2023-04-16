@@ -24,7 +24,10 @@ export default function EditEmployee() {
         },
         {
           onSuccess: message => {
-            void router.push('/')
+            void router.push({
+              pathname: '/',
+              query: { activeTab: 'Employees' },
+            })
             showNotification({
               title: 'Success',
               message,

@@ -1,4 +1,5 @@
 import { showNotification } from '@mantine/notifications'
+import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 
 import { EmployeeForm } from '@/components/employee/employee-form'
@@ -6,11 +7,13 @@ import { useAddEmployee } from '@/hooks/employee'
 import { BaseLayout } from '@/layouts/base-layout'
 
 export default function AddEmployeePage() {
+  const router = useRouter()
   const addEmployee = useAddEmployee()
   const handleAddEmployeeSubmit = useCallback(
     (employeeFormData: FormData) => {
       addEmployee.mutate(employeeFormData, {
         onSuccess: message => {
+          void router.push({ pathname: '/', query: { activeTab: 'Employees' } })
           showNotification({
             title: 'Success',
             message,
@@ -26,7 +29,7 @@ export default function AddEmployeePage() {
         },
       })
     },
-    [addEmployee]
+    [addEmployee, router]
   )
   return (
     <BaseLayout

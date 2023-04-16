@@ -76,15 +76,16 @@ export function EmployeeForm(props: EmployeeFormProps) {
       position: employee?.position ?? '',
       isBillable: employee?.isBillable ?? true,
       billableHours: employee?.billableHours ?? 40,
-      teamId: String(employee?.teamId) ?? '',
+      teamId: employee?.teamId?.toString() ?? '',
     },
   })
   const handleSubmit = useCallback(
     (data: EmployeeFormData) => {
       const formData = new FormData()
-      Object.entries(data).forEach(([key, value]) =>
+      Object.entries(data).forEach(([key, value]) => {
+        if (!value) return
         formData.append(key, String(value))
-      )
+      })
       if (image !== null) formData.append('profileImage', image)
       if (props.mode === 'add') props.onAddEmployeeSubmit(formData)
       if (props.mode === 'edit') props.onEditEmployeeSubmit(formData)
@@ -208,7 +209,6 @@ export function EmployeeForm(props: EmployeeFormProps) {
               data={selectTeamData}
               label='Team'
               placeholder='Select a team'
-              withAsterisk
               {...form.getInputProps('teamId')}
             />
           </SimpleGrid>
