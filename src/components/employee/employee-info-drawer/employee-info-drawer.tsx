@@ -15,6 +15,7 @@ import { Employee } from '@prisma/client'
 import { IconPencil } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useMemo } from 'react'
 
 import { getEmployeeFullName } from '@/utils/employee'
@@ -66,7 +67,15 @@ export function EmployeeInfoDrawer({
         />
       </SimpleGrid>
       <Divider my='md' />
-      <Button fullWidth leftIcon={<IconPencil />}>
+      <Button
+        component={Link}
+        fullWidth
+        href={{
+          pathname: '/edit-employee',
+          query: { id: employee.id },
+        }}
+        leftIcon={<IconPencil />}
+      >
         Edit Profile
       </Button>
     </Drawer>
