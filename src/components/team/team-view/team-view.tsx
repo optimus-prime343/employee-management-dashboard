@@ -1,4 +1,12 @@
-import { Box, Button, createStyles, Text, TextInput } from '@mantine/core'
+import {
+  Box,
+  Button,
+  createStyles,
+  Pagination,
+  Text,
+  TextInput,
+} from '@mantine/core'
+import { useDebouncedState } from '@mantine/hooks'
 import { openConfirmModal } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { IconFilter, IconPlus, IconSearch } from '@tabler/icons-react'
@@ -12,12 +20,16 @@ import { TeamWithMembers, useDeleteTeam, useTeams } from '@/hooks/team'
 
 export function TeamView() {
   const router = useRouter()
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useDebouncedState('', 500)
   const [teamManHourRange, setTeamManHourRange] = useState<
     [number, number] | undefined
   >(undefined)
+  const [activePage, setActivePage] = useState(1)
 
-  const { data: teams, refetch: refetchTeams } = useTeams()
+  const { data: paginatedTeams, refetch: refetchTeams } = useTeams({
+    page: activePage,
+    search,
+  })
   const deleteTeam = useDeleteTeam()
 
   const handleClearFilter = useCallback(
@@ -71,10 +83,10 @@ export function TeamView() {
     <Box py='md'>
       <Box className={classes.searchContainer} mb='md'>
         <TextInput
+          defaultValue={search}
           icon={<IconSearch />}
           onChange={event => setSearch(event.currentTarget.value)}
           placeholder='Search item'
-          value={search}
         />
         <ManHourRangeFilter
           onApply={setTeamManHourRange}
@@ -93,7 +105,14 @@ export function TeamView() {
       <TeamListTable
         onDeleteTeam={openConfirmDeleteTeamModal}
         onEditTeam={handleEditTeam}
-        teams={teams}
+        teams={paginatedTeams?.data ?? []}
+      />
+      <Pagination
+        mt='md'
+        onChange={setActivePage}
+        position='right'
+        total={paginatedTeams?.totalPages ?? 0}
+        value={activePage}
       />
     </Box>
   )

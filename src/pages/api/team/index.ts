@@ -1,19 +1,41 @@
 import { getReasonPhrase, StatusCodes } from 'http-status-codes'
 
+import { GetTeamsRequestParams } from '@/hooks/team'
 import { db } from '@/lib/db'
 import { TeamFormData } from '@/schemas/team'
 import { createHandlerFactory } from '@/utils/handler'
+import { paginate } from '@/utils/paginate'
 
 const handler = createHandlerFactory()
 
 handler
   .get(async (request, response) => {
+    const totalTeamCount = await db.team.count()
+    const { search, page } = request.query as Record<
+      keyof GetTeamsRequestParams,
+      string | undefined
+    >
+    const { take, skip, totalPages, nextPage, prevPage } = paginate(
+      totalTeamCount,
+      Number(page) ?? 1
+    )
     const teams = await db.team.findMany({
       include: {
         members: true,
       },
+      where: {
+        name: {
+          contains: search ?? '',
+          mode: 'insensitive',
+        },
+      },
+      take,
+      skip,
     })
     response.status(StatusCodes.OK).json({
+      totalPages,
+      nextPage,
+      prevPage,
       data: teams,
     })
   })

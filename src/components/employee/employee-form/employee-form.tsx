@@ -51,14 +51,14 @@ export function EmployeeForm(props: EmployeeFormProps) {
   )
   const employee = props.mode === 'add' ? undefined : props.employee
 
-  const { data: teams } = useTeams()
+  const { data: paginatedTeams } = useTeams()
   const selectTeamData = useMemo<SelectItem[]>(
     () =>
-      teams.map(team => ({
+      (paginatedTeams?.data ?? []).map(team => ({
         label: team.name,
         value: team.id.toString(),
       })),
-    [teams]
+    [paginatedTeams?.data]
   )
   const form = useForm<EmployeeFormData>({
     validate: zodResolver(EmployeeSchema),
