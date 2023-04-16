@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { API_ENDPOINTS } from '@/constants/api-endpoints'
 import { QUERY_KEYS } from '@/constants/query-keys'
 import { EmployeeWithTeam } from '@/hooks/employee/use-employees'
 import { api } from '@/lib/api'
@@ -13,7 +12,7 @@ export const useEmployeeDetail = (id: string) =>
       try {
         const employeeDetailResponse = await api.get<
           ApiResponseSuccess<EmployeeWithTeam>
-        >(API_ENDPOINTS.employee.getEmployeeDetail(id))
+        >(`/employee/${id}`)
         return employeeDetailResponse.data.data
       } catch (error) {
         console.error(error)

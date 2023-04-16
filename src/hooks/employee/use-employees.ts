@@ -1,7 +1,6 @@
 import { Employee, Team } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
 
-import { API_ENDPOINTS } from '@/constants/api-endpoints'
 import { QUERY_KEYS } from '@/constants/query-keys'
 import { api } from '@/lib/api'
 import { PaginatedResponse } from '@/types/api-response'
@@ -18,7 +17,7 @@ export const useEmployees = (params?: GetEmployeesRequestParams) =>
       try {
         const employeesResponse = await api.get<
           PaginatedResponse<EmployeeWithTeam[]>
-        >(API_ENDPOINTS.employee.base, {
+        >('/employee', {
           params,
         })
         return employeesResponse.data

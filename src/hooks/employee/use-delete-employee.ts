@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { API_ENDPOINTS } from '@/constants/api-endpoints'
 import { api } from '@/lib/api'
 import { ApiResponseSuccess } from '@/types/api-response'
 
@@ -10,7 +9,7 @@ export const useDeleteEmployee = () =>
       try {
         const deleteEmployeeResponse = await api.delete<
           ApiResponseSuccess<string>
-        >(API_ENDPOINTS.employee.base, {
+        >('/employee', {
           params: { id },
         })
         return deleteEmployeeResponse.data.data

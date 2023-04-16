@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { API_ENDPOINTS } from '@/constants/api-endpoints'
 import { QUERY_KEYS } from '@/constants/query-keys'
 import { api } from '@/lib/api'
 import { ApiResponseSuccess } from '@/types/api-response'
@@ -11,7 +10,7 @@ export const useTeamCount = () =>
     queryFn: async () => {
       try {
         const teamCountResponse = await api.get<ApiResponseSuccess<number>>(
-          API_ENDPOINTS.team.getTeamCount
+          '/team/count'
         )
         return teamCountResponse.data.data
       } catch (error) {
