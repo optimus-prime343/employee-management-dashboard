@@ -10,16 +10,19 @@ import { useDebouncedState } from '@mantine/hooks'
 import { openConfirmModal } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { IconFilter, IconPlus, IconSearch } from '@tabler/icons-react'
+import { useQueryClient } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 
 import { ManHourRangeFilter } from '@/components/team/man-hour-range-filter'
 import { TeamListTable } from '@/components/team/team-list-table'
+import { QUERY_KEYS } from '@/constants/query-keys'
 import { TeamWithMembers, useDeleteTeam, useTeams } from '@/hooks/team'
 
 export function TeamView() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [search, setSearch] = useDebouncedState('', 500)
   const [showManHourRangeFilter, setShowManHourRangeFilter] = useState(false)
   const [teamManHourRange, setTeamManHourRange] = useState<
@@ -62,8 +65,18 @@ export function TeamView() {
         ),
         onConfirm: () => {
           deleteTeam.mutate(team.id.toString(), {
-            onSuccess: () => {
-              void refetchTeams()
+            onSuccess: message => {
+              showNotification({
+                title: 'Success',
+                message,
+                color: 'teal',
+              })
+              Promise.all([
+                queryClient.invalidateQueries(QUERY_KEYS.team.getTeamCount),
+                refetchTeams(),
+              ]).catch(error => {
+                console.error(error)
+              })
             },
             onError: error => {
               showNotification({
@@ -76,7 +89,7 @@ export function TeamView() {
         },
       })
     },
-    [deleteTeam, refetchTeams]
+    [deleteTeam, queryClient, refetchTeams]
   )
   const { classes } = useStyles()
   return (
