@@ -1,4 +1,6 @@
-import { Box, Button, createStyles, TextInput } from '@mantine/core'
+import { Box, Button, createStyles, Text, TextInput } from '@mantine/core'
+import { openConfirmModal } from '@mantine/modals'
+import { showNotification } from '@mantine/notifications'
 import { IconFilter, IconPlus, IconSearch } from '@tabler/icons-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -6,7 +8,7 @@ import { useCallback, useState } from 'react'
 
 import { ManHourRangeFilter } from '@/components/team/man-hour-range-filter'
 import { TeamListTable } from '@/components/team/team-list-table'
-import { TeamWithMembers, useTeams } from '@/hooks/team'
+import { TeamWithMembers, useDeleteTeam, useTeams } from '@/hooks/team'
 
 export function TeamView() {
   const router = useRouter()
@@ -15,7 +17,8 @@ export function TeamView() {
     [number, number] | undefined
   >(undefined)
 
-  const { data: teams } = useTeams()
+  const { data: teams, refetch: refetchTeams } = useTeams()
+  const deleteTeam = useDeleteTeam()
 
   const handleClearFilter = useCallback(
     () => setTeamManHourRange(undefined),
@@ -31,6 +34,37 @@ export function TeamView() {
       })
     },
     [router]
+  )
+  const openConfirmDeleteTeamModal = useCallback(
+    (team: TeamWithMembers) => {
+      openConfirmModal({
+        title: 'Delete Team',
+        children: (
+          <Text>
+            Are you sure you want to delete team{' '}
+            <Text component='span' fw='bold'>
+              {team.name}
+            </Text>
+            ?
+          </Text>
+        ),
+        onConfirm: () => {
+          deleteTeam.mutate(team.id.toString(), {
+            onSuccess: () => {
+              void refetchTeams()
+            },
+            onError: error => {
+              showNotification({
+                title: 'Error',
+                message: error.message,
+                color: 'red',
+              })
+            },
+          })
+        },
+      })
+    },
+    [deleteTeam, refetchTeams]
   )
   const { classes } = useStyles()
   return (
@@ -56,7 +90,11 @@ export function TeamView() {
           Add Team
         </Button>
       </Box>
-      <TeamListTable onEditTeam={handleEditTeam} teams={teams} />
+      <TeamListTable
+        onDeleteTeam={openConfirmDeleteTeamModal}
+        onEditTeam={handleEditTeam}
+        teams={teams}
+      />
     </Box>
   )
 }

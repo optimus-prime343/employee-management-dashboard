@@ -54,4 +54,21 @@ handler
       })
     }
   })
+  .delete(async (request, response) => {
+    try {
+      const deletedTeam = await db.team.delete({
+        where: {
+          id: Number(request.query.id),
+        },
+      })
+      response.status(StatusCodes.OK).json({
+        data: `Successfully deleted team ${deletedTeam.name}`,
+      })
+    } catch (error) {
+      console.error(error)
+      response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        data: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR),
+      })
+    }
+  })
 export default handler
