@@ -4,11 +4,13 @@ import { openConfirmModal } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { Employee } from '@prisma/client'
 import { IconPlus, IconSearch } from '@tabler/icons-react'
+import { useQueryClient } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 
 import { EmployeeListTable } from '@/components/employee/employee-list-table'
+import { QUERY_KEYS } from '@/constants/query-keys'
 import { useDeleteEmployee, useEmployees } from '@/hooks/employee'
 import { getEmployeeFullName } from '@/utils/employee'
 
@@ -21,6 +23,7 @@ export function EmployeeView() {
   const [search, setSearch] = useDebouncedState<string>('', 400)
   const [activePage, setActivePage] = useState<number>(1)
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   const { data: paginatedEmployees, refetch: refetchEmployees } = useEmployees({
     search,
@@ -49,7 +52,12 @@ export function EmployeeView() {
                 message,
                 color: 'green',
               })
-              refetchEmployees().catch(error => {
+              Promise.all([
+                queryClient.invalidateQueries(
+                  QUERY_KEYS.employee.getEmployeeCount
+                ),
+                refetchEmployees(),
+              ]).catch(error => {
                 console.error(error)
               })
             },
@@ -64,7 +72,7 @@ export function EmployeeView() {
         },
       })
     },
-    [deleteEmployee, refetchEmployees]
+    [deleteEmployee, queryClient, refetchEmployees]
   )
   const handleEditEmployee = useCallback(
     (employee: Employee) =>
