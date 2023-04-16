@@ -51,7 +51,7 @@ export default function EditTeam() {
         }
       )
     },
-    [editTeam, id, router]
+    [editTeam, id, queryClient, router]
   )
 
   return (
