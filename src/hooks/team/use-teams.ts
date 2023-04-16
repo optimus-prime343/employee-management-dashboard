@@ -11,6 +11,8 @@ export type TeamWithMembers = Team & {
 export type GetTeamsRequestParams = {
   search?: string
   page?: number
+  teamManHourRangeStart?: number
+  teamManHourRangeEnd?: number
 }
 export const useTeams = (getTeamsRequestParams?: GetTeamsRequestParams) =>
   useQuery<PaginatedResponse<TeamWithMembers[]>, Error>({

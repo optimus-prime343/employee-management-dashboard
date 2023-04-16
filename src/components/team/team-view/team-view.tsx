@@ -21,21 +21,21 @@ import { TeamWithMembers, useDeleteTeam, useTeams } from '@/hooks/team'
 export function TeamView() {
   const router = useRouter()
   const [search, setSearch] = useDebouncedState('', 500)
+  const [showManHourRangeFilter, setShowManHourRangeFilter] = useState(false)
   const [teamManHourRange, setTeamManHourRange] = useState<
     [number, number] | undefined
   >(undefined)
+
   const [activePage, setActivePage] = useState(1)
 
   const { data: paginatedTeams, refetch: refetchTeams } = useTeams({
     page: activePage,
     search,
+    teamManHourRangeStart: teamManHourRange?.[0],
+    teamManHourRangeEnd: teamManHourRange?.[1],
   })
   const deleteTeam = useDeleteTeam()
 
-  const handleClearFilter = useCallback(
-    () => setTeamManHourRange(undefined),
-    []
-  )
   const handleEditTeam = useCallback(
     (team: TeamWithMembers) => {
       void router.push({
@@ -89,10 +89,15 @@ export function TeamView() {
           placeholder='Search item'
         />
         <ManHourRangeFilter
-          onApply={setTeamManHourRange}
-          onClearFilter={handleClearFilter}
+          onManHourRangeChange={setTeamManHourRange}
+          onShowManHourRangeFilterChange={setShowManHourRangeFilter}
+          showManHourRangeFilter={showManHourRangeFilter}
           target={
-            <Button leftIcon={<IconFilter />} variant='outline'>
+            <Button
+              leftIcon={<IconFilter />}
+              onClick={() => setShowManHourRangeFilter(opened => !opened)}
+              variant='outline'
+            >
               Filter
             </Button>
           }

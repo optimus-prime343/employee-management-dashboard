@@ -11,10 +11,9 @@ const handler = createHandlerFactory()
 handler
   .get(async (request, response) => {
     const totalTeamCount = await db.team.count()
-    const { search, page } = request.query as Record<
-      keyof GetTeamsRequestParams,
-      string | undefined
-    >
+    const { search, page, teamManHourRangeStart, teamManHourRangeEnd } =
+      request.query as Record<keyof GetTeamsRequestParams, string | undefined>
+
     const { take, skip, totalPages, nextPage, prevPage } = paginate(
       totalTeamCount,
       Number(page) ?? 1
@@ -24,6 +23,12 @@ handler
         members: true,
       },
       where: {
+        totalManHours: {
+          gte: teamManHourRangeStart
+            ? Number(teamManHourRangeStart)
+            : undefined,
+          lte: teamManHourRangeEnd ? Number(teamManHourRangeEnd) : undefined,
+        },
         name: {
           contains: search ?? '',
           mode: 'insensitive',
