@@ -5,6 +5,7 @@ import { useCallback } from 'react'
 import { EmployeeView } from '@/components/employee/employee-view'
 import { TeamEmployeeCount } from '@/components/misc/team-employee-count'
 import { TeamView } from '@/components/team/team-view'
+import { useShowQRDetail } from '@/hooks/team'
 import { BaseLayout } from '@/layouts/base-layout'
 
 const TEAMS = 'Teams'
@@ -23,6 +24,7 @@ function HomePage() {
     },
     [router]
   )
+  useShowQRDetail()
   return (
     <BaseLayout showBreadcrumbs={false} title='Manage Users'>
       <TeamEmployeeCount />
