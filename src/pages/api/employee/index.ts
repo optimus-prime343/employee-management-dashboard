@@ -34,7 +34,7 @@ handler
     >
     const { take, skip, totalPages, nextPage, prevPage } = paginate(
       totalEmployeeCount,
-      Number(page) ?? 1
+      page ? Number(page) : 1
     )
     const createEmployeeeSearchFilters = () => {
       const fields: Array<keyof Prisma.EmployeeWhereInput> = [
