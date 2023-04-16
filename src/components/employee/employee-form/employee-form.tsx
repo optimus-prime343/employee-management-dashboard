@@ -40,6 +40,7 @@ interface EditEmployeeFormProps {
 type EmployeeFormProps = AddEmployeeFormProps | EditEmployeeFormProps
 
 const GAP = 64
+const TITLE_MIN_WIDTH = '8rem'
 export function EmployeeForm(props: EmployeeFormProps) {
   const [image, setImage] = useState<File | null>(null)
 
@@ -110,7 +111,9 @@ export function EmployeeForm(props: EmployeeFormProps) {
       <Divider my='lg' />
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Flex align='baseline' gap={GAP}>
-          <Title order={6}>Basic Information</Title>
+          <Title miw={TITLE_MIN_WIDTH} order={6}>
+            Basic Information
+          </Title>
           <SimpleGrid cols={3} sx={{ flex: 1 }}>
             <TextInput
               label='First Name'
@@ -166,7 +169,9 @@ export function EmployeeForm(props: EmployeeFormProps) {
         </Flex>
         <Divider my='lg' />
         <Flex align='baseline' gap={GAP}>
-          <Title order={6}>Working Hours</Title>
+          <Title miw={TITLE_MIN_WIDTH} order={6}>
+            Working Hours
+          </Title>
           <SimpleGrid cols={3} sx={{ flex: 1 }}>
             <TextInput
               label='Starts At'
@@ -184,7 +189,9 @@ export function EmployeeForm(props: EmployeeFormProps) {
         </Flex>
         <Divider my='lg' />
         <Flex align='baseline' gap={GAP}>
-          <Title order={6}>Work</Title>
+          <Title miw={TITLE_MIN_WIDTH} order={6}>
+            Work
+          </Title>
           <SimpleGrid cols={3} sx={{ flex: 1 }}>
             <TextInput
               label='Job Position'
@@ -203,7 +210,9 @@ export function EmployeeForm(props: EmployeeFormProps) {
         </Flex>
         <Divider my='lg' />
         <Flex align='baseline' gap={GAP}>
-          <Title order={6}>Billable Information</Title>
+          <Title miw={TITLE_MIN_WIDTH} order={6}>
+            Billable Information
+          </Title>
           <SimpleGrid>
             <Checkbox
               label='This user is billable'
