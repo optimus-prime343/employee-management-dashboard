@@ -16,7 +16,7 @@ handler
 
     const { take, skip, totalPages, nextPage, prevPage } = paginate(
       totalTeamCount,
-      Number(page) ?? 1
+      page ? Number(page) : 1
     )
     const teams = await db.team.findMany({
       include: {
