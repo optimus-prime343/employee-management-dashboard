@@ -26,6 +26,9 @@ export const useShowQRDetail = () => {
             </Text>
           </Stack>
         ),
+        onClose: () => {
+          void router.push('/')
+        },
       })
     }
   }, [router, router.query])
