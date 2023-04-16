@@ -2,8 +2,8 @@ import { ActionIcon, Group, Table, Text } from '@mantine/core'
 import { Employee } from '@prisma/client'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { ReactNode, useCallback, useMemo } from 'react'
-import QRCode from 'react-qr-code'
 
+import { TeamQRCode } from '@/components/team/team-qr-code'
 import { TeamWithMembers } from '@/hooks/team'
 import { getEmployeeFullName } from '@/utils/employee'
 
@@ -35,17 +35,6 @@ export function TeamListTable({
       </Text>
     )
   }, [])
-
-  const generateQRCodeValue = useCallback((team: TeamWithMembers): string => {
-    const vercelURL = process.env.VERCEL_URL
-    const localURL = 'http://localhost:3000'
-    const qrScanRedirectURL = vercelURL ? `https://${vercelURL}` : localURL
-    const url = new URL('/', qrScanRedirectURL)
-    url.searchParams.append('name', team.name)
-    url.searchParams.append('password', team.password)
-    return url.toString()
-  }, [])
-
   const rows = useMemo<JSX.Element[]>(
     () =>
       teams.map(team => (
@@ -53,9 +42,10 @@ export function TeamListTable({
           <td>{team.name}</td>
           <td>{formatTeamMembers(team.members)}</td>
           <td>
-            <QRCode
+            <TeamQRCode
+              name={team.name}
+              password={team.password}
               style={{ width: 40, height: 40 }}
-              value={generateQRCodeValue(team)}
             />
           </td>
           <td>{team.totalManHours}</td>
@@ -71,7 +61,7 @@ export function TeamListTable({
           </td>
         </tr>
       )),
-    [formatTeamMembers, generateQRCodeValue, onDeleteTeam, onEditTeam, teams]
+    [formatTeamMembers, onDeleteTeam, onEditTeam, teams]
   )
   return (
     <Table>
