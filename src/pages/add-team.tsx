@@ -31,7 +31,7 @@ export default function AddTeamPage() {
     [addTeam, router]
   )
   return (
-    <BaseLayout showBreadcrumbs title='Add Team'>
+    <BaseLayout title='Add Team'>
       <TeamForm
         isAddButtonLoading={addTeam.isLoading}
         mode='add'

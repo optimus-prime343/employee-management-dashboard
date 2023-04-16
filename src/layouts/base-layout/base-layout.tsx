@@ -16,6 +16,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ReactNode, useMemo, useState } from 'react'
 
+import { convertHyphenToTitleCase } from '@/utils/casing'
+
 export interface BaseLayoutProps {
   title?: string
   showBreadcrumbs?: boolean
@@ -23,7 +25,7 @@ export interface BaseLayoutProps {
 }
 export function BaseLayout({
   title,
-  showBreadcrumbs,
+  showBreadcrumbs = true,
   children,
 }: BaseLayoutProps) {
   const router = useRouter()
@@ -33,10 +35,18 @@ export function BaseLayout({
   const { classes } = useStyles()
 
   const breadCrumbItems = useMemo<JSX.Element[]>(() => {
-    const items = router.pathname.split('/').filter(Boolean)
+    const routeItems = router.pathname
+      .split('/')
+      .filter(Boolean)
+      .map(item => ({
+        label: convertHyphenToTitleCase(item),
+        href: `/${item}`,
+      }))
+    const homeItem = { href: '/', label: 'Home' }
+    const items = [homeItem, ...routeItems]
     return items.map(item => (
-      <Anchor key={item} component={Link} href={`/${item}`}>
-        {item}
+      <Anchor key={item.href} component={Link} href={item.href}>
+        {item.label}
       </Anchor>
     ))
   }, [router.pathname])

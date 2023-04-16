@@ -32,7 +32,7 @@ export default function AddEmployeePage() {
     [addEmployee, router]
   )
   return (
-    <BaseLayout showBreadcrumbs title='Add employee'>
+    <BaseLayout title='Add employee'>
       <EmployeeForm
         isAddButtonLoading={addEmployee.isLoading}
         mode='add'
