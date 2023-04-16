@@ -1,5 +1,6 @@
 /* eslint-disable react/destructuring-assignment */
 import {
+  Box,
   Button,
   Checkbox,
   createStyles,
@@ -93,14 +94,18 @@ export function EmployeeForm(props: EmployeeFormProps) {
   const { classes } = useStyles()
   return (
     <Paper p='md'>
-      <Flex align='center' gap={GAP * 1.2}>
-        <Image
-          alt='Profile Image'
-          className={classes.image}
-          height={100}
-          src={imageURL ?? employee?.profileImage ?? '/images/default_user.png'}
-          width={100}
-        />
+      <Flex align='center' gap={GAP}>
+        <Box miw={TITLE_MIN_WIDTH}>
+          <Image
+            alt='Profile Image'
+            className={classes.image}
+            height={100}
+            src={
+              imageURL ?? employee?.profileImage ?? '/images/default_user.png'
+            }
+            width={100}
+          />
+        </Box>
         <Stack>
           <Title order={4}>Profile Image</Title>
           <FileButton accept='image/*' onChange={setImage}>
