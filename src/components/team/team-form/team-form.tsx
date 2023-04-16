@@ -36,6 +36,7 @@ export type TeamFormProps = AddTeamFormProps | EditTeamFormProps
 const GAP = 64
 const MIN_INPUT_WIDTH = 350
 const MIN_SELECT_MEMBERS_HEIGHT = 600
+const MIN_TITLE_WIDTH = '8rem'
 
 export function TeamForm(props: TeamFormProps) {
   const { data: employees } = useEmployees()
@@ -77,7 +78,9 @@ export function TeamForm(props: TeamFormProps) {
     <Paper p='md'>
       <form onSubmit={form.onSubmit(handleFormSubmit)}>
         <Flex align='baseline' gap={GAP}>
-          <Title order={6}>Basic Information</Title>
+          <Title miw={MIN_TITLE_WIDTH} order={6}>
+            Basic Information
+          </Title>
           <SimpleGrid cols={2}>
             <TextInput
               label='Team Name'
@@ -97,7 +100,9 @@ export function TeamForm(props: TeamFormProps) {
         </Flex>
         <Divider my='lg' />
         <Flex align='baseline' gap={GAP}>
-          <Title order={6}>Team Members</Title>
+          <Title miw={MIN_TITLE_WIDTH} order={6}>
+            Team Members
+          </Title>
           <SimpleGrid cols={1}>
             <MultiSelect
               data={selectTeamMembersData}
