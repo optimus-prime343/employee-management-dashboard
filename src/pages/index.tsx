@@ -24,7 +24,7 @@ function HomePage() {
     [router]
   )
   return (
-    <BaseLayout contentTitle='Manage Users'>
+    <BaseLayout title='Manage Users'>
       <TeamEmployeeCount />
       <Paper p='md'>
         <Tabs

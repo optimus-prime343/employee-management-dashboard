@@ -17,20 +17,12 @@ import { useRouter } from 'next/router'
 import { ReactNode, useMemo, useState } from 'react'
 
 export interface BaseLayoutProps {
-  /**
-   * The title of the page
-   */
   title?: string
-  /**
-   * The title of the content
-   */
-  contentTitle?: string
   showBreadcrumbs?: boolean
   children: ReactNode
 }
 export function BaseLayout({
   title,
-  contentTitle,
   showBreadcrumbs,
   children,
 }: BaseLayoutProps) {
@@ -98,7 +90,7 @@ export function BaseLayout({
           {showBreadcrumbs ? (
             <Breadcrumbs>{breadCrumbItems}</Breadcrumbs>
           ) : null}
-          {contentTitle ? <Title order={4}>{contentTitle}</Title> : null}
+          {title ? <Title order={4}>{title}</Title> : null}
           {children}
         </Stack>
       </AppShell>

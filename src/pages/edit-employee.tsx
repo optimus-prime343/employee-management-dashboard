@@ -54,7 +54,7 @@ export default function EditEmployee() {
         sx={{ position: 'fixed', inset: 0 }}
         visible={isEmployeeDetailLoading}
       />
-      <BaseLayout contentTitle='Edit employee' title='Edit employee'>
+      <BaseLayout title='Edit employee'>
         {employeeDetail !== undefined ? (
           <EmployeeForm
             employee={employeeDetail}

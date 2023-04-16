@@ -55,7 +55,7 @@ export default function EditTeam() {
   )
 
   return (
-    <BaseLayout contentTitle='Edit Team' title='Edit team'>
+    <BaseLayout title='Edit team'>
       <LoadingOverlay
         overlayBlur={6}
         sx={{ position: 'fixed', inset: 0 }}
