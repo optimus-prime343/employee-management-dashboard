@@ -28,7 +28,7 @@ handler
   .use(multer().any())
   .get(async (request, response) => {
     const totalEmployeeCount = await db.employee.count()
-    const { search, page } = request.query as Record<
+    const { search = '', page } = request.query as Record<
       keyof GetEmployeesRequestParams,
       string | undefined
     >
