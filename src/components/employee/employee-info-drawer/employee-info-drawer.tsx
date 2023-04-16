@@ -2,6 +2,7 @@ import {
   Badge,
   Box,
   Button,
+  createStyles,
   Divider,
   Drawer,
   DrawerProps,
@@ -30,13 +31,15 @@ export function EmployeeInfoDrawer({
       employee.isBillable ? 'Employee is billable' : 'Employee is not billable',
     [employee.isBillable]
   )
+  const { classes } = useStyles()
   return (
     <Drawer {...rest}>
       <Image
         alt={`${getEmployeeFullName(employee)} profile image`}
-        height={100}
+        className={classes.image}
+        height={140}
         src={employee.profileImage ?? '/images/default_user.png'}
-        width={100}
+        width={140}
       />
       <Stack mt='sm' spacing={0}>
         <Title order={4}>{getEmployeeFullName(employee)}</Title>
@@ -77,3 +80,9 @@ function EmployeeInfo({ label, value }: { label: string; value: string }) {
     </Box>
   )
 }
+const useStyles = createStyles(() => ({
+  image: {
+    borderRadius: '50%',
+    objectFit: 'cover',
+  },
+}))
