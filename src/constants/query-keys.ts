@@ -8,5 +8,6 @@ export const QUERY_KEYS = {
     getTeamCount: ['teamCount'],
     getTeams: ['teams'],
     getTeamDetail: (id: string) => ['team', id],
+    getTeamManHours: (memberIds: string[]) => ['teamManHours', ...memberIds],
   },
 } as const

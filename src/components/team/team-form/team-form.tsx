@@ -14,7 +14,7 @@ import { useForm, zodResolver } from '@mantine/form'
 import { useCallback, useMemo } from 'react'
 
 import { useEmployees } from '@/hooks/employee'
-import { TeamWithMembers } from '@/hooks/team'
+import { TeamWithMembers, useTeamManHours } from '@/hooks/team'
 import { TeamFormData, TeamSchema } from '@/schemas/team'
 import { getEmployeeFullName } from '@/utils/employee'
 
@@ -65,13 +65,18 @@ export function TeamForm(props: TeamFormProps) {
       totalManHours: team?.totalManHours ?? 0,
     },
   })
+  const { data: totalManHours } = useTeamManHours(form.values.members)
 
   const handleFormSubmit = useCallback(
     (teamFormData: TeamFormData) => {
-      if (props.mode === 'add') props.onAddTeam(teamFormData)
-      if (props.mode === 'edit') props.onEditTeam(teamFormData)
+      const teamFormDataWithManHours = {
+        ...teamFormData,
+        totalManHours,
+      }
+      if (props.mode === 'add') props.onAddTeam(teamFormDataWithManHours)
+      if (props.mode === 'edit') props.onEditTeam(teamFormDataWithManHours)
     },
-    [props]
+    [props, totalManHours]
   )
 
   return (
@@ -118,6 +123,7 @@ export function TeamForm(props: TeamFormProps) {
               disabled
               label='Billable Hours'
               placeholder='Enter billable hours'
+              value={totalManHours}
             />
           </SimpleGrid>
         </Flex>

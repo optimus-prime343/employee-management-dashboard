@@ -75,9 +75,9 @@ handler
           workStartsAt: dayjs(workStartsAt, 'HH:mm').toDate(),
           workEndsAt: dayjs(workEndsAt, 'HH:mm').toDate(),
           position,
-          teamId: JSON.parse(teamId) ?? null,
-          isBillable: JSON.parse(isBillable) ?? false,
-          billableHours: JSON.parse(billableHours) ?? 40,
+          teamId: teamId ? JSON.parse(teamId) : null,
+          isBillable: isBillable ? JSON.parse(isBillable) : false,
+          billableHours: billableHours ? JSON.parse(billableHours) : 40,
           profileImage: profileImageURL ?? undefined,
         },
       })
