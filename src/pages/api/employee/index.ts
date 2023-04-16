@@ -6,9 +6,11 @@ import CustomParseFormat from 'dayjs/plugin/customParseFormat'
 import { getReasonPhrase, StatusCodes } from 'http-status-codes'
 import multer from 'multer'
 
+import { GetEmployeesRequestParams } from '@/hooks/employee'
 import { db } from '@/lib/db'
 import { getEmployeeFullName } from '@/utils/employee'
 import { createHandlerFactory } from '@/utils/handler'
+import { paginate } from '@/utils/paginate'
 import { uploadImage } from '@/utils/upload-image'
 
 dayjs.extend(CustomParseFormat)
@@ -25,12 +27,48 @@ const handler = createHandlerFactory()
 handler
   .use(multer().any())
   .get(async (request, response) => {
+    const totalEmployeeCount = await db.employee.count()
+    const { search, page } = request.query as Record<
+      keyof GetEmployeesRequestParams,
+      string | undefined
+    >
+    const { take, skip, totalPages, nextPage, prevPage } = paginate(
+      totalEmployeeCount,
+      Number(page) ?? 1
+    )
+    const createEmployeeeSearchFilters = () => {
+      const fields: Array<keyof Prisma.EmployeeWhereInput> = [
+        'firstName',
+        'lastName',
+        'phoneNumber',
+        'email',
+        'position',
+      ]
+      const filters = fields.map(field => ({
+        [field]: {
+          contains: search,
+          mode: 'insensitive',
+        },
+      }))
+      return filters
+    }
     const employees = await db.employee.findMany({
       include: {
         team: true,
       },
+      where: {
+        OR: [
+          ...createEmployeeeSearchFilters(),
+          { team: { name: { contains: search, mode: 'insensitive' } } },
+        ],
+      },
+      take,
+      skip,
     })
     response.status(StatusCodes.OK).json({
+      totalPages,
+      nextPage,
+      prevPage,
       data: employees,
     })
   })

@@ -1,4 +1,5 @@
-import { Box, Button, Paper, Text, TextInput } from '@mantine/core'
+import { Box, Button, Pagination, Paper, Text, TextInput } from '@mantine/core'
+import { useDebouncedState } from '@mantine/hooks'
 import { openConfirmModal } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { Employee } from '@prisma/client'
@@ -17,9 +18,14 @@ export function EmployeeView() {
   const [selectedEmployee, setSelectedEmployee] = useState<
     Employee | undefined
   >(undefined)
+  const [search, setSearch] = useDebouncedState<string>('', 400)
+  const [activePage, setActivePage] = useState<number>(1)
   const router = useRouter()
 
-  const { data: employees, refetch: refetchEmployees } = useEmployees()
+  const { data: paginatedEmployees, refetch: refetchEmployees } = useEmployees({
+    search,
+    page: activePage,
+  })
   const deleteEmployee = useDeleteEmployee()
 
   const openConfirmDeleteEmployeeModal = useCallback(
@@ -82,17 +88,29 @@ export function EmployeeView() {
       ) : null}
       <Paper py='md'>
         <Box mb='md' sx={{ display: 'flex' }}>
-          <TextInput icon={<IconSearch />} placeholder='Search employee' />
+          <TextInput
+            defaultValue={search}
+            icon={<IconSearch />}
+            onChange={event => setSearch(event.currentTarget.value)}
+            placeholder='Search employee'
+          />
           <Box sx={{ flex: 1 }} />
           <Button component={Link} href='/add-employee' leftIcon={<IconPlus />}>
             Add Employee
           </Button>
         </Box>
         <EmployeeListTable
-          employees={employees}
+          employees={paginatedEmployees?.data ?? []}
           onDeleteEmployee={openConfirmDeleteEmployeeModal}
           onEditEmployee={handleEditEmployee}
           onViewEmployee={setSelectedEmployee}
+        />
+        <Pagination
+          mt='md'
+          onChange={setActivePage}
+          position='right'
+          total={paginatedEmployees?.totalPages ?? 0}
+          value={activePage}
         />
       </Paper>
     </>

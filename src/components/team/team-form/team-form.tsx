@@ -39,10 +39,10 @@ const MIN_SELECT_MEMBERS_HEIGHT = 600
 const MIN_TITLE_WIDTH = '8rem'
 
 export function TeamForm(props: TeamFormProps) {
-  const { data: employees } = useEmployees()
+  const { data: paginatedEmployees } = useEmployees()
   const selectTeamMembersData = useMemo(
     () =>
-      employees.map(employee => ({
+      (paginatedEmployees?.data ?? []).map(employee => ({
         label: getEmployeeFullName(employee),
         value: employee.id.toString(),
         description: employee.position,
@@ -50,7 +50,7 @@ export function TeamForm(props: TeamFormProps) {
         // isAlreadyOnATeam: employee.teamId !== null,
         disabled: employee.teamId !== null,
       })),
-    [employees]
+    [paginatedEmployees?.data]
   )
   const team = props.mode === 'edit' ? props.team : undefined
   const teamMembers =
