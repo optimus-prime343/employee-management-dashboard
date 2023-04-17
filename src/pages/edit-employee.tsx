@@ -11,8 +11,11 @@ import { BaseLayout } from '@/layouts/base-layout'
 export default function EditEmployee() {
   const router = useRouter()
   const { id } = router.query
-  const { data: employeeDetail, isLoading: isEmployeeDetailLoading } =
-    useEmployeeDetail(id as string)
+  const {
+    data: employeeDetail,
+    isLoading: isEmployeeDetailLoading,
+    refetch: refetchEmployeeDetail,
+  } = useEmployeeDetail(id as string)
   const editEmployee = useEditEmployee()
 
   const handleEditEmployee = useCallback(
@@ -24,15 +27,19 @@ export default function EditEmployee() {
         },
         {
           onSuccess: message => {
-            void router.push({
-              pathname: '/',
-              query: { activeTab: 'Employees' },
-            })
-            showNotification({
-              title: 'Success',
-              message,
-              color: 'teal',
-            })
+            refetchEmployeeDetail()
+              .then(() => {
+                void router.push({
+                  pathname: '/',
+                  query: { activeTab: 'Employees' },
+                })
+                showNotification({
+                  title: 'Success',
+                  message,
+                  color: 'teal',
+                })
+              })
+              .catch(console.error)
           },
           onError: error => {
             showNotification({
@@ -44,7 +51,7 @@ export default function EditEmployee() {
         }
       )
     },
-    [editEmployee, id, router]
+    [editEmployee, id, refetchEmployeeDetail, router]
   )
 
   return (
