@@ -47,8 +47,7 @@ export function TeamForm(props: TeamFormProps) {
         value: employee.id.toString(),
         description: employee.position,
         image: employee.profileImage,
-        // isAlreadyOnATeam: employee.teamId !== null,
-        disabled: employee.teamId !== null,
+        isAlreadyOnATeam: employee.teamId !== null,
       })),
     [paginatedEmployees?.data]
   )

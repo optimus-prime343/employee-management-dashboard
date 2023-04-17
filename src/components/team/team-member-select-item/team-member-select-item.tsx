@@ -1,4 +1,13 @@
-import { Avatar, Badge, Box, BoxProps, Flex, Group, Text } from '@mantine/core'
+import {
+  Avatar,
+  Badge,
+  Box,
+  BoxProps,
+  createStyles,
+  Flex,
+  Group,
+  Text,
+} from '@mantine/core'
 import { forwardRef } from 'react'
 
 export interface TeamMemberSelectItemProps extends BoxProps {
@@ -10,9 +19,16 @@ export interface TeamMemberSelectItemProps extends BoxProps {
 export const TeamMemberSelectItem = forwardRef<
   HTMLDivElement,
   TeamMemberSelectItemProps
->(({ label, description, image, isAlreadyOnATeam, ...rest }, ref) => {
+>((props, ref) => {
+  const { label, description, image, isAlreadyOnATeam, className, ...rest } =
+    props
+  const { classes, cx } = useStyles()
   return (
-    <Box ref={ref} {...rest}>
+    <Box
+      ref={ref}
+      {...rest}
+      className={cx(className, isAlreadyOnATeam ? classes.disabled : undefined)}
+    >
       <Flex align='flex-start' justify='space-between' wrap='nowrap'>
         <Group>
           <Avatar radius='xl' src={image ?? '/images/default_user.png'} />
@@ -30,4 +46,10 @@ export const TeamMemberSelectItem = forwardRef<
     </Box>
   )
 })
+const useStyles = createStyles(() => ({
+  disabled: {
+    opacity: 0.7,
+    pointerEvents: 'none',
+  },
+}))
 TeamMemberSelectItem.displayName = 'TeamMemberSelectItem'
