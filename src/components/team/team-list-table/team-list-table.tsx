@@ -1,6 +1,6 @@
 import { ActionIcon, Group, Table, Text } from '@mantine/core'
 import { Employee } from '@prisma/client'
-import { IconPencil, IconTrash } from '@tabler/icons-react'
+import { IconEye, IconPencil, IconTrash } from '@tabler/icons-react'
 import { ReactNode, useCallback, useMemo } from 'react'
 
 import { TeamQRCode } from '@/components/team/team-qr-code'
@@ -43,14 +43,16 @@ export function TeamListTable({
           <td>{formatTeamMembers(team.members)}</td>
           <td>
             <TeamQRCode
-              name={team.name}
-              password={team.password}
               style={{ width: 40, height: 40 }}
+              teamId={team.id.toString()}
             />
           </td>
           <td>{team.totalManHours}</td>
           <td>
             <Group>
+              <ActionIcon color='green'>
+                <IconEye />
+              </ActionIcon>
               <ActionIcon color='blue' onClick={() => onEditTeam?.(team)}>
                 <IconPencil />
               </ActionIcon>
