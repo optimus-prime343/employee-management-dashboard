@@ -14,7 +14,7 @@ export const TeamQRCode = forwardRef<SVGSVGElement, TeamQRCodeProps>(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     // displays only type error , doesn't affect the functionality on runtime
-    return <QRCode ref={ref} {...rest} value={qrRedirectURL} />
+    return <QRCode {...rest} ref={ref} value={qrRedirectURL} />
   }
 )
 TeamQRCode.displayName = 'TeamQRCode'

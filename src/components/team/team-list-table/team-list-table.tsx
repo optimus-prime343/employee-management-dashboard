@@ -11,11 +11,13 @@ export interface TeamListTableProps {
   teams: TeamWithMembers[]
   onEditTeam?: (team: TeamWithMembers) => void
   onDeleteTeam?: (team: TeamWithMembers) => void
+  onViewTeam?: (team: TeamWithMembers) => void
 }
 export function TeamListTable({
   teams,
   onEditTeam,
   onDeleteTeam,
+  onViewTeam,
 }: TeamListTableProps) {
   const formatTeamMembers = useCallback((members: Employee[]): ReactNode => {
     if (members.length === 0) return 'No members assigned'
@@ -50,7 +52,7 @@ export function TeamListTable({
           <td>{team.totalManHours}</td>
           <td>
             <Group>
-              <ActionIcon color='green'>
+              <ActionIcon color='green' onClick={() => onViewTeam?.(team)}>
                 <IconEye />
               </ActionIcon>
               <ActionIcon color='blue' onClick={() => onEditTeam?.(team)}>
@@ -63,7 +65,7 @@ export function TeamListTable({
           </td>
         </tr>
       )),
-    [formatTeamMembers, onDeleteTeam, onEditTeam, teams]
+    [formatTeamMembers, onDeleteTeam, onEditTeam, onViewTeam, teams]
   )
   return (
     <Table>

@@ -16,6 +16,7 @@ import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 
 import { ManHourRangeFilter } from '@/components/team/man-hour-range-filter'
+import { TeamInfoDrawer } from '@/components/team/team-info-drawer'
 import { TeamListTable } from '@/components/team/team-list-table'
 import { QUERY_KEYS } from '@/constants/query-keys'
 import { TeamWithMembers, useDeleteTeam, useTeams } from '@/hooks/team'
@@ -28,6 +29,9 @@ export function TeamView() {
   const [teamManHourRange, setTeamManHourRange] = useState<
     [number, number] | undefined
   >(undefined)
+  const [selectedTeam, setSelectedTeam] = useState<TeamWithMembers | undefined>(
+    undefined
+  )
 
   const [activePage, setActivePage] = useState(1)
 
@@ -93,46 +97,59 @@ export function TeamView() {
   )
   const { classes } = useStyles()
   return (
-    <Box py='md'>
-      <Box className={classes.searchContainer} mb='md'>
-        <TextInput
-          defaultValue={search}
-          icon={<IconSearch />}
-          onChange={event => setSearch(event.currentTarget.value)}
-          placeholder='Search item'
+    <>
+      {selectedTeam !== undefined ? (
+        <TeamInfoDrawer
+          onClose={() => setSelectedTeam(undefined)}
+          opened={selectedTeam !== undefined}
+          overlayProps={{ opacity: 0.5, blur: 4 }}
+          position='right'
+          team={selectedTeam}
+          title='Team Info'
         />
-        <ManHourRangeFilter
-          onManHourRangeChange={setTeamManHourRange}
-          onShowManHourRangeFilterChange={setShowManHourRangeFilter}
-          showManHourRangeFilter={showManHourRangeFilter}
-          target={
-            <Button
-              leftIcon={<IconFilter />}
-              onClick={() => setShowManHourRangeFilter(opened => !opened)}
-              variant='outline'
-            >
-              Filter
-            </Button>
-          }
+      ) : null}
+      <Box py='md'>
+        <Box className={classes.searchContainer} mb='md'>
+          <TextInput
+            defaultValue={search}
+            icon={<IconSearch />}
+            onChange={event => setSearch(event.currentTarget.value)}
+            placeholder='Search item'
+          />
+          <ManHourRangeFilter
+            onManHourRangeChange={setTeamManHourRange}
+            onShowManHourRangeFilterChange={setShowManHourRangeFilter}
+            showManHourRangeFilter={showManHourRangeFilter}
+            target={
+              <Button
+                leftIcon={<IconFilter />}
+                onClick={() => setShowManHourRangeFilter(opened => !opened)}
+                variant='outline'
+              >
+                Filter
+              </Button>
+            }
+          />
+          <Box sx={{ flex: 1 }} />
+          <Button component={Link} href='/add-team' leftIcon={<IconPlus />}>
+            Add Team
+          </Button>
+        </Box>
+        <TeamListTable
+          onDeleteTeam={openConfirmDeleteTeamModal}
+          onEditTeam={handleEditTeam}
+          onViewTeam={setSelectedTeam}
+          teams={paginatedTeams?.data ?? []}
         />
-        <Box sx={{ flex: 1 }} />
-        <Button component={Link} href='/add-team' leftIcon={<IconPlus />}>
-          Add Team
-        </Button>
+        <Pagination
+          mt='md'
+          onChange={setActivePage}
+          position='right'
+          total={paginatedTeams?.totalPages ?? 0}
+          value={activePage}
+        />
       </Box>
-      <TeamListTable
-        onDeleteTeam={openConfirmDeleteTeamModal}
-        onEditTeam={handleEditTeam}
-        teams={paginatedTeams?.data ?? []}
-      />
-      <Pagination
-        mt='md'
-        onChange={setActivePage}
-        position='right'
-        total={paginatedTeams?.totalPages ?? 0}
-        value={activePage}
-      />
-    </Box>
+    </>
   )
 }
 const useStyles = createStyles(theme => ({
