@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore .",
     "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore . --fix",
-    "postinstall": "npx prisma generate dev --name initial"
+    "postinstall": "npx prisma generate dev --name initial",
+    "vercel-build": "npx prisma generate && npx prisma migrate deploy && next build"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
