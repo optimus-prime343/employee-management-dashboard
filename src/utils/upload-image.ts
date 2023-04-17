@@ -3,8 +3,6 @@ import path from 'node:path'
 
 import sharp from 'sharp'
 
-import { createDirectoryIfNotExist } from '@/utils/create-directory-if-not-exist'
-
 export const uploadImage = async (
   file: Express.Multer.File | undefined,
   uploadPath: string
@@ -12,9 +10,12 @@ export const uploadImage = async (
   if (file === undefined) return Promise.resolve(null)
   const fileName = `${crypto.randomUUID()}.png`
   const imagePathDB = `${uploadPath}/${fileName}`
-  const imageDirectoryPath = path.join(process.cwd(), 'public', uploadPath)
-  const imageStoragePath = path.join(imageDirectoryPath, fileName)
-  await createDirectoryIfNotExist(imageDirectoryPath)
+  const imageStoragePath = path.join(
+    process.cwd(),
+    'public',
+    uploadPath,
+    fileName
+  )
   await sharp(file.buffer)
     .png({
       quality: 95,
