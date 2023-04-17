@@ -30,6 +30,7 @@ handler
   .patch(async (request, response) => {
     const { name, password, members, totalManHours } =
       request.body as TeamFormData
+    // update the team member ids to the new ones and remove the teamId from the
     try {
       const updatedTeam = await db.team.update({
         where: {
@@ -39,7 +40,7 @@ handler
           name,
           password,
           members: {
-            connect: members.map(member => ({ id: Number(member) })),
+            set: members.map(member => Number(member)).map(id => ({ id })),
           },
           totalManHours,
         },
