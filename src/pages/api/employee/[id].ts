@@ -9,7 +9,6 @@ import multer from 'multer'
 import { db } from '@/lib/db'
 import { getEmployeeFullName } from '@/utils/employee'
 import { createHandlerFactory } from '@/utils/handler'
-import { uploadImage } from '@/utils/upload-image'
 
 dayjs.extend(CustomParseFormat)
 
@@ -38,6 +37,7 @@ handler
     try {
       const { id } = request.query as { id: string }
       const {
+        profileImage,
         firstName,
         middleName,
         lastName,
@@ -56,11 +56,6 @@ handler
         keyof Prisma.EmployeeUncheckedUpdateInput,
         string
       >
-      const profileImageFile = request.files?.[0]
-      const profileImageURL = await uploadImage(
-        profileImageFile,
-        '/images/employees'
-      )
       const updatedEmployee = await db.employee.update({
         where: { id: Number(id) },
         data: {
@@ -78,7 +73,7 @@ handler
           teamId: teamId ? JSON.parse(teamId) : null,
           isBillable: isBillable ? JSON.parse(isBillable) : false,
           billableHours: billableHours ? JSON.parse(billableHours) : 40,
-          profileImage: profileImageURL ?? undefined,
+          profileImage,
         },
       })
       response.status(StatusCodes.OK).json({

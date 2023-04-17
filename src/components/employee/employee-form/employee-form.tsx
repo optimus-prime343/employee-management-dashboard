@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable react/destructuring-assignment */
 import {
   Box,
@@ -21,6 +22,7 @@ import { Employee } from '@prisma/client'
 import Image from 'next/image'
 import { useCallback, useMemo, useState } from 'react'
 
+import { useUploadFile } from '@/hooks/common'
 import { useTeams } from '@/hooks/team'
 import { EmployeeFormData, EmployeeSchema } from '@/schemas/employee'
 import { formatDateInputDate, formatDateInputTime } from '@/utils/date-input'
@@ -45,12 +47,13 @@ const TITLE_MIN_WIDTH = '8rem'
 export function EmployeeForm(props: EmployeeFormProps) {
   const [image, setImage] = useState<File | null>(null)
 
-  const imageURL = useMemo<string | undefined>(
+  const previewImageURL = useMemo<string | undefined>(
     () => (image !== null ? URL.createObjectURL(image) : undefined),
     [image]
   )
   const employee = props.mode === 'add' ? undefined : props.employee
 
+  const uploadFile = useUploadFile()
   const { data: paginatedTeams } = useTeams()
   const selectTeamData = useMemo<SelectItem[]>(
     () =>
@@ -80,17 +83,21 @@ export function EmployeeForm(props: EmployeeFormProps) {
     },
   })
   const handleSubmit = useCallback(
-    (data: EmployeeFormData) => {
+    async (data: EmployeeFormData) => {
+      const uploadedImageUrl = await uploadFile.mutateAsync({
+        directory: 'employees',
+        file: image,
+      })
       const formData = new FormData()
       Object.entries(data).forEach(([key, value]) => {
         if (!value) return
         formData.append(key, String(value))
       })
-      if (image !== null) formData.append('profileImage', image)
+      formData.append('profileImage', uploadedImageUrl)
       if (props.mode === 'add') props.onAddEmployeeSubmit(formData)
       if (props.mode === 'edit') props.onEditEmployeeSubmit(formData)
     },
-    [image, props]
+    [image, props, uploadFile]
   )
   const { classes } = useStyles()
   return (
@@ -102,7 +109,10 @@ export function EmployeeForm(props: EmployeeFormProps) {
             className={classes.image}
             height={100}
             src={
-              imageURL ?? employee?.profileImage ?? '/images/default_user.png'
+              previewImageURL ??
+              (employee?.profileImage
+                ? employee?.profileImage
+                : '/images/default_user.png')
             }
             width={100}
           />
@@ -235,9 +245,10 @@ export function EmployeeForm(props: EmployeeFormProps) {
         <Divider my='lg' />
         <Button
           loading={
-            props.mode === 'edit'
+            uploadFile.isLoading ||
+            (props.mode === 'edit'
               ? props.isEditButtonLoading
-              : props.isAddButtonLoading
+              : props.isAddButtonLoading)
           }
           type='submit'
         >

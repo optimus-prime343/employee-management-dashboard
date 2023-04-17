@@ -11,7 +11,6 @@ import { db } from '@/lib/db'
 import { getEmployeeFullName } from '@/utils/employee'
 import { createHandlerFactory } from '@/utils/handler'
 import { paginate } from '@/utils/paginate'
-import { uploadImage } from '@/utils/upload-image'
 
 dayjs.extend(CustomParseFormat)
 
@@ -74,11 +73,6 @@ handler
   })
   .post(async (request, response) => {
     try {
-      const profileImageFile = request.files?.[0]
-      const profileImageURL = await uploadImage(
-        profileImageFile,
-        '/images/employees'
-      )
       const {
         firstName,
         middleName,
@@ -94,6 +88,7 @@ handler
         teamId,
         isBillable,
         billableHours,
+        profileImage,
       } = request.body as Record<
         keyof Prisma.EmployeeUncheckedCreateInput,
         string
@@ -114,7 +109,7 @@ handler
           teamId: teamId ? JSON.parse(teamId) : null,
           isBillable: isBillable ? JSON.parse(isBillable) : false,
           billableHours: billableHours ? JSON.parse(billableHours) : 40,
-          profileImage: profileImageURL,
+          profileImage,
         },
       })
       response.status(StatusCodes.CREATED).json({

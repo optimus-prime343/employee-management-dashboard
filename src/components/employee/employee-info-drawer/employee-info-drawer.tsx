@@ -39,7 +39,11 @@ export function EmployeeInfoDrawer({
         alt={`${getEmployeeFullName(employee)} profile image`}
         className={classes.image}
         height={140}
-        src={employee.profileImage ?? '/images/default_user.png'}
+        src={
+          employee.profileImage
+            ? employee.profileImage
+            : '/images/default_user.png'
+        }
         width={140}
       />
       <Stack mt='sm' spacing={0}>

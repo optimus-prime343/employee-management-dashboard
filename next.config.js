@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     // allow any image to be used
-    domains: [],
+    domains: ['firebasestorage.googleapis.com'],
   },
 }
 
