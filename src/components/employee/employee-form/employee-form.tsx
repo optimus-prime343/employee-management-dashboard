@@ -208,6 +208,7 @@ export function EmployeeForm(props: EmployeeFormProps) {
             <Select
               data={selectTeamData}
               label='Team'
+              nothingFound='No team found'
               placeholder='Select a team'
               {...form.getInputProps('teamId')}
             />

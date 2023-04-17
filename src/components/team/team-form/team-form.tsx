@@ -114,6 +114,7 @@ export function TeamForm(props: TeamFormProps) {
               label='Team Members'
               maxDropdownHeight={MIN_SELECT_MEMBERS_HEIGHT}
               miw={MIN_INPUT_WIDTH}
+              nothingFound='No employees found'
               placeholder='Select team members'
               withAsterisk
               {...form.getInputProps('members')}
