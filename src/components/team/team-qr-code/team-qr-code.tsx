@@ -7,7 +7,9 @@ export interface TeamQRCodeProps extends Omit<QRCodeProps, 'value' | 'ref'> {
 export const TeamQRCode = forwardRef<SVGSVGElement, TeamQRCodeProps>(
   ({ teamId, ...rest }, ref) => {
     const qrRedirectURL = useMemo<string>(() => {
-      const url = new URL(process.env.VERCEL_URL ?? 'http://localhost:3000')
+      const url = new URL(
+        process.env.NEXT_PUBLIC_VERCEL_URL ?? 'http://localhost:3000'
+      )
       url.searchParams.append('teamId', teamId)
       return url.toString()
     }, [teamId])
