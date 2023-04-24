@@ -68,7 +68,7 @@ export function EmployeeListTable({
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>{isEmployeesLoading ? <TableSkeleton /> : rows}</tbody>
+      <tbody>{isEmployeesLoading ? <TableSkeleton rows={8} /> : rows}</tbody>
     </Table>
   )
 }
