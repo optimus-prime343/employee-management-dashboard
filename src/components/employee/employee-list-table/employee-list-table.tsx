@@ -3,17 +3,20 @@ import { Employee } from '@prisma/client'
 import { IconEye, IconPencil, IconTrash } from '@tabler/icons-react'
 import { useMemo } from 'react'
 
+import { TableSkeleton } from '@/components/misc/table-skeleton'
 import { EmployeeWithTeam } from '@/hooks/employee'
 import { getEmployeeFullName } from '@/utils/employee'
 
 export interface EmployeeListTableProps {
   employees: EmployeeWithTeam[]
+  isEmployeesLoading?: boolean
   onViewEmployee?: (employee: Employee) => void
   onEditEmployee?: (employee: Employee) => void
   onDeleteEmployee?: (employee: Employee) => void
 }
 export function EmployeeListTable({
   employees,
+  isEmployeesLoading,
   onViewEmployee,
   onEditEmployee,
   onDeleteEmployee,
@@ -65,7 +68,7 @@ export function EmployeeListTable({
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>{rows}</tbody>
+      <tbody>{isEmployeesLoading ? <TableSkeleton /> : rows}</tbody>
     </Table>
   )
 }

@@ -35,7 +35,11 @@ export function TeamView() {
 
   const [activePage, setActivePage] = useState(1)
 
-  const { data: paginatedTeams, refetch: refetchTeams } = useTeams({
+  const {
+    data: paginatedTeams,
+    refetch: refetchTeams,
+    isLoading: isTeamsLoading,
+  } = useTeams({
     page: activePage,
     search,
     teamManHourRangeStart: teamManHourRange?.[0],
@@ -136,6 +140,7 @@ export function TeamView() {
           </Button>
         </Box>
         <TeamListTable
+          isTeamsLoading={isTeamsLoading}
           onDeleteTeam={openConfirmDeleteTeamModal}
           onEditTeam={handleEditTeam}
           onViewTeam={setSelectedTeam}

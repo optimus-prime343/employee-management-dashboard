@@ -3,18 +3,21 @@ import { Employee } from '@prisma/client'
 import { IconEye, IconPencil, IconTrash } from '@tabler/icons-react'
 import { ReactNode, useCallback, useMemo } from 'react'
 
+import { TableSkeleton } from '@/components/misc/table-skeleton'
 import { TeamQRCode } from '@/components/team/team-qr-code'
 import { TeamWithMembers } from '@/hooks/team'
 import { getEmployeeFullName } from '@/utils/employee'
 
 export interface TeamListTableProps {
   teams: TeamWithMembers[]
+  isTeamsLoading?: boolean
   onEditTeam?: (team: TeamWithMembers) => void
   onDeleteTeam?: (team: TeamWithMembers) => void
   onViewTeam?: (team: TeamWithMembers) => void
 }
 export function TeamListTable({
   teams,
+  isTeamsLoading,
   onEditTeam,
   onDeleteTeam,
   onViewTeam,
@@ -78,7 +81,7 @@ export function TeamListTable({
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>{rows}</tbody>
+      <tbody>{isTeamsLoading ? <TableSkeleton /> : rows}</tbody>
     </Table>
   )
 }

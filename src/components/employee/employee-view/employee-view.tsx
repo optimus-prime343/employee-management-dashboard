@@ -25,7 +25,11 @@ export function EmployeeView() {
   const router = useRouter()
   const queryClient = useQueryClient()
 
-  const { data: paginatedEmployees, refetch: refetchEmployees } = useEmployees({
+  const {
+    data: paginatedEmployees,
+    refetch: refetchEmployees,
+    isLoading: isEmployeesLoading,
+  } = useEmployees({
     search,
     page: activePage,
   })
@@ -109,6 +113,7 @@ export function EmployeeView() {
         </Box>
         <EmployeeListTable
           employees={paginatedEmployees?.data ?? []}
+          isEmployeesLoading={isEmployeesLoading}
           onDeleteEmployee={openConfirmDeleteEmployeeModal}
           onEditEmployee={handleEditEmployee}
           onViewEmployee={setSelectedEmployee}
